@@ -500,13 +500,22 @@ The prompt teaches general principles (analyze, classify, recommend, execute wit
 
 ## What's Next
 
-You've built the foundation: the agent can restart a Kubernetes pod. But DevOps work involves dozens of repetitive manual actions. Every time you see "disk full" in logs, you SSH in and clean /tmp. When Redis cache hit rate drops, you flush it. When connection pool exhausted appears, you adjust the limits.
+You've built the foundation: the agent can restart a Kubernetes pod using placeholder code. But real production incidents are more complex. They involve multiple systems, AWS services, and require coordination across infrastructure layers.
 
-In the next chapter, you'll implement the actions you actually need:
-- **Cache management** to clear Redis/Memcached when performance degrades
-- **Disk cleanup** to remove old logs and temp files when space runs low
-- **Service health checks** that verify and restart unresponsive services
-- **Database pool management** to handle connection exhaustion
-- **Queue management** to purge backed-up message queues
+In **Chapter 10: Building a Complex Agent with Actions**, you'll tackle a real production scenario:
 
-Each scenario maps a common log pattern to a real action. You'll move from placeholder print statements to actual kubectl, docker, and system commands—with proper safety checks and rollback mechanisms.
+Your three-tier application runs on AWS:
+- Frontend (CloudFront + S3)
+- Backend (Java microservices on EKS with multiple pods)
+- Data layer (RDS MySQL + Redis ElastiCache)
+
+The problem: Traffic spikes cause all backend pods to max out database connections. Logs show "too many connections" errors. Service degrades. Your current workflow: manually restart RDS, wait 5 minutes, verify recovery, notify the team on Slack.
+
+You'll build an agent that:
+1. **Detects database connection exhaustion** across the application logs
+2. **Analyzes root cause**: connection leak vs. legitimate scaling issue
+3. **Executes AWS actions**: Reboot RDS database using boto3 (real implementation, not placeholder)
+4. **Waits and verifies**: Confirms database is healthy before marking resolved
+5. **Notifies team**: Sends detailed incident report to Slack with full context
+
+We keep the log reading simple to focus on what matters: building real actions that interact with AWS services. This is a complete, real-world incident response workflow. You'll move from placeholder print statements to actual AWS API calls and Slack webhooks—with proper error handling, security, and observability.
