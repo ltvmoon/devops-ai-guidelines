@@ -104,18 +104,22 @@ If you like the book version, check here to download: [Practical DevOps AI](http
 - Implementing basic actions: Integrate with PagerDuty, Slack, or email for notifications.
 - Testing and validation: Start with read-only actions before moving to automated responses.
 
-## Chapter 10: Building Real Actions for Common DevOps Scenarios
+## Chapter 10: Building a Complex Agent with Actions
 
-- Identifying repetitive manual tasks: Map common log issues to DevOps actions you do manually every day.
-- Real action implementations: Move from placeholders to actual kubectl, docker, and system commands.
-- Scenario 1: Cache management (cache hit rate drops → clear Redis/Memcached).
-- Scenario 2: Disk space recovery (disk full errors → clean old logs, temp files).
-- Scenario 3: Service health checks and restarts (service unresponsive → health check → restart if needed).
-- Scenario 4: Database connection pool management (connection errors → check pool status → adjust limits).
-- Scenario 5: Queue management (queue backup warnings → purge old messages, scale consumers).
-- Building action chains: Combine multiple actions for complex recovery workflows.
-- Testing real actions safely: Dry-run modes, rollback mechanisms, and validation checks.
-- Action result verification: Confirm actions succeeded before marking incidents resolved.
+- Real-world architecture: Three-tier application on AWS (Frontend, Backend on EKS, RDS + Redis).
+- The problem: Multiple Java backend pods hitting max database connections causing "too many connections" errors.
+- Understanding the scenario: How connection pool exhaustion happens in distributed systems.
+- Keeping it simple: Using log files instead of kubectl integration to focus on the action workflow.
+- Sample logs: Realistic backend application logs showing database connection errors from multiple pods.
+- Database connection detection: Pattern matching for MySQL/PostgreSQL "too many connections" errors.
+- Root cause analysis: Understanding connection leak vs. scaling issue from log evidence.
+- Action 1: Restart RDS database: Implement AWS RDS reboot using boto3 with proper wait/verification.
+- Action 2: Slack notification: Send detailed incident report to team channel with context and actions taken.
+- Action chaining: Read logs → Detect issue → Restart database → Wait for healthy → Notify team → Report status.
+- AWS credentials and security: Proper IAM roles, credential management, and least-privilege access.
+- Error handling: Handle AWS API failures, timeout scenarios, and rollback strategies.
+- Complete workflow implementation: From log detection to resolution with full observability.
+- Production note: How to extend this to read logs directly from CloudWatch or Kubernetes in real deployments.
 
 ## Chapter 11: Memory and State Management
 
